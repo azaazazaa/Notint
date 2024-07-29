@@ -5,13 +5,9 @@ library(stringr)
 library(tidyr)
 library(jsonlite)
 
-# https://www.notion.so/Database-3f84aa11891d4cd8963dc1b577a248bb?pvs=4
-
-
-# Наш скопированный токен.
 NOTION_TOKEN <- Sys.getenv("R_NITION_API_TOKEN_my_life")
-DATABASE_ID <- "62b6ef37c6054cc0bb33cd5375b8efe8" # ваш код базы данных
-base_url <- "https://api.notion.com/v1/" # сслыка notion api
+DATABASE_ID <- "62b6ef37c6054cc0bb33cd5375b8efe8"
+base_url <- "https://api.notion.com/v1/"
 
 ## 1.1: Создаем путь ----
 base_request <- request(base_url) %>%
