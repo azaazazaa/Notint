@@ -3,7 +3,7 @@ library(tidyr)
 library(stringr)
 
 # функция для перевода data.frame в telegram таблицу 
-to_tg_table <- function( table, align = NULL, indents = 3, parse_mode = 'Markdown' ) {
+to_tg_table <- function(table, align = NULL, indents = 3, parse_mode = 'Markdown' ) {
   
   # если выравнивание не задано то выравниваем по левому краю
   if ( is.null(align) ) {
@@ -55,7 +55,7 @@ to_tg_table <- function( table, align = NULL, indents = 3, parse_mode = 'Markdow
   # поочереди переводим каждый столбец к нужному виду
   t_str <-   pmap_df( rules, str_pad )%>%
     unite("data", everything(), remove = TRUE, sep = '') %>%
-    unlist(data) %>%
+    unlist(.) %>%
     str_c(collapse = '\n') 
   
   # если таблица занимает более 4096 символов обрезаем её

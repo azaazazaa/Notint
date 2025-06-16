@@ -1,7 +1,28 @@
 library(telegram.bot)
+library(googlesheets4)
+library(data.table)
+library(lubridate)
+
+state_env <- "asd"
+source("envFunction.R")
+
+
+
+# googlesheets4::gs4_auth()
+source("GoogleConn.R")
+
+# 
+source("Functions.R")
+source("GoogleFunctions.R")
+
+# Для обработки диалога
+source("Handlers.R")
+source("MessageFilters.R")
+
 
 # создаём экземпляр класса Updater
 updater <- Updater(token = Sys.getenv("R_TELEGRAM_BOT_my_life"))
+
 
 # Пишем метод для приветсвия
 say_hello <- function(bot, update) {
@@ -17,11 +38,16 @@ say_hello <- function(bot, update) {
 }
 
 # создаём обработчик
-hi_hendler <- CommandHandler('hi', say_hello)
+day <- CommandHandler('day', get_cost_day)
+week <- CommandHandler('week', get_cost_week)
+month <- CommandHandler('month', get_cost_month)
 
-# добаляем обработчик в диспетчер
-updater <- updater + hi_hendler
+# Регистрируем
+updater <- updater + day + week + month
+
+# Для диалога
+updater <- updater + start_h + state_h + reset_h + wait_category_h + wait_cost_h + wait_comment_h
+
 
 # запускаем бота
 updater$start_polling()
-
