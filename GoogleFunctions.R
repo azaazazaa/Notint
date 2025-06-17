@@ -72,6 +72,11 @@ start <- function(bot, update) {
   bot$sendMessage(update$message$chat_id, 
                   text = "Введите категорию трат")
   
+  categories[, Описание := fifelse(is.na(Описание), "", Описание)]
+  bot$sendMessage(update$from_chat_id(),
+                  text = to_tg_table(categories),
+                  parse_mode = "Markdown")
+  
   # переключаем состояние диалога в режим ожидания ввода имени
   set_state(chat_id = update$message$chat_id, state = 'wait_category')
   
@@ -90,7 +95,7 @@ state <- function(bot, update) {
 
 # reset dialog state
 reset <- function(bot, update) {
-  
+  update_local_data()
   set_state(chat_id = update$message$chat_id, state = 'start')
   
 }
@@ -139,6 +144,8 @@ enter_cost <- function(bot, update) {
     bot$sendMessage(update$message$chat_id, 
                     text = "ОК, принято")
     
+    bot$sendMessage(update$message$chat_id, 
+                    text = "Оставьте комментарий")
     
     # переводим диалог в следующее состояние
     set_state(chat_id = update$message$chat_id, state = 'wait_comment')
@@ -160,10 +167,16 @@ enter_comment <- function(bot, update) {
                           data.table(Дата = today, Категория = category_env, Стоимость = cost_env, Комментарий = comment_env)), use.names = TRUE, fill=TRUE)
   table[, Комментарий := fifelse(is.na(Комментарий), "", Комментарий)]
   
-  bot$sendMessage(update$message$chat_id,
-                  text = to_tg_table(table),
-                  parse_mode = "Markdown")
   
+  gh_url <- "https://docs.google.com/spreadsheets/d/1PgV0B_Nndi4CUP_5foUv5QKrka0hgpRMe4ExNPBKO90/edit?gid=0#gid=0"
+  
+  googlesheets4::range_write(gh_url, table, sheet = "Повседневные")
+  update_local_data()
+  
+  bot$sendMessage(update$message$chat_id,
+                  text = "Данные обновлены",
+                  parse_mode = "Markdown")
+  # 
   set_state(123, "menu")
   
 }
