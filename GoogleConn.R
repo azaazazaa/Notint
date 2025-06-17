@@ -10,6 +10,7 @@ update_local_data <- function() {
   categories <<- read_sheet(gh_url, range = "B:C", sheet = "Справочники") %>% as.data.table()
   names(categories) <<- c("Название", "Описание")
 
+  state_env <- "asd"
 }
 
 update_local_data()
